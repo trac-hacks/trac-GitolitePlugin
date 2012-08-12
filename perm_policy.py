@@ -31,28 +31,42 @@ class GitolitePermissionPolicy(Component):
             resource = resource.parent
 
     def read_config(self):
-        return utils.read_config(self.env, self.gitolite_admin_reponame)
+        repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
+        node = repo.get_node("conf/gitolite.conf")
+        fp = node.get_content()
+        return utils.read_config(fp)
 
     def check_repository_permission(self, action, username, repository, resource, perm):
         repos = self.read_config()
-        if username != 'anonymous' and username in repos.get(repository.id, []):
-            return True
-        if '@all' in repos.get(repository.id, []):
-            if username != 'anonymous':
-                return True
-            elif self.all_includes_anonymous:
-                return True
-
-        ## If the repo is known in the config but the user isn't explicitly granted access there,
-        ## then the user does not have access.
-        if repository.id in repos:
-            return False
 
         ## If the repo is not known in the config, we defer to the supersystem's decisions,
         ## unless our configuration says otherwise.
-        if self.default_to_private:
+        if repository.id not in repos:
+            if self.default_to_private:
+                return False
+            else:
+                return None
+
+        perms = repos[repository.id]
+
+        if username == 'anonymous':
+            if self.all_includes_anonymous:
+                if '@all' in perms.get('R', []):
+                    return True
+            ## If the repo is known in the config then we assume that anonymous users can't see it
+            ## unless the @all-check in the previous stanza was triggered.
             return False
-        return None
+
+        if username in perms.get('R', []):
+            return True
+
+        if '@all' in perms.get('R', []):
+            return True
+
+        ## If the repo is known in the config but the user isn't explicitly granted access there,
+        ## then the user does not have access.
+        return False
+
 
     ## IPermissionPolicy methods
             
