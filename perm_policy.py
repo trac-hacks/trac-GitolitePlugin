@@ -2,20 +2,18 @@ from trac.core import *
 from trac.config import Option, BoolOption
 from trac.perm import IPermissionPolicy
 
-class GitoliteMultiRepoPermissionPolicyProvider(Component):
+class GitolitePermissionPolicy(Component):
     implements(IPermissionPolicy)
 
-    gitolite_admin_reponame = Option('multirepo-permissions', 'gitolite_admin_reponame',
+    gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
-    default_to_private = BoolOption(
-        'multirepo-permissions', 'default_private', 
-        default=False,
+    default_to_private = BoolOption('trac-gitolite', 'default_private',
+                                    default=False,
         doc=("If this flag is set to True, then repositories will be private by default, "
              "causing all permissions to be denied to all users if the repository "
              "is not mentioned in the gitolite conf file."))
-    all_includes_anonymous = BoolOption(
-        'multirepo-permissions', 'all_includes_anonymous', 
-        default=False,
+    all_includes_anonymous = BoolOption('trac-gitolite', 'all_includes_anonymous'
+                                        default=False,
         doc=("If this flag is set to True, then anonymous users will be granted permissions "
              "on repositories that specify ``@all = R``.  By default, the ``@all`` token "
              "is considered to mean all logged-in users only."))
