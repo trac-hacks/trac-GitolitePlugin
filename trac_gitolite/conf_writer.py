@@ -12,7 +12,10 @@ class GitoliteConfWriter(Component):
                                      default="gitolite-admin")
 
     def read_config(self):
-        return utils.read_config(self.env, self.gitolite_admin_reponame)
+        repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
+        node = repo.get_node("conf/gitolite.conf")
+        fp = node.get_content()
+        return utils.read_config(fp)
     
     ## IAdminPanelProvider methods
 
