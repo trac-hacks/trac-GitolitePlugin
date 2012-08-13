@@ -1,3 +1,4 @@
+import json
 import pkg_resources
 
 from trac.admin import IAdminPanelProvider
@@ -5,6 +6,7 @@ from trac.core import *
 from trac.config import Option, BoolOption
 from trac.util.translation import _
 from trac.web.chrome import ITemplateProvider
+from trac.web.chrome import add_notice
 
 from trac_gitolite import utils
 
@@ -39,10 +41,29 @@ class GitoliteConfWriter(Component):
     def render_admin_panel(self, req, category, page, path_info):
         req.perm.require('VERSIONCONTROL_ADMIN')
 
-        perms = self.read_config()
-
         if req.method == 'POST':
+            perms = {}
+            for setting in req.args:
+                try:
+                    setting = json.loads(setting)
+                except ValueError:
+                    continue
+                if not isinstance(setting, dict) or 'perm' not in setting or 'user' not in setting or 'repo' not in setting:
+                    continue
+                repo = setting['repo']; perm = setting['perm']; user = setting['user']
+                if repo not in perms:
+                    perms[repo] = {}
+                if perm not in perms[repo]:
+                    perms[repo][perm] = []
+                if user not in perms[repo][perm]:
+                    perms[repo][perm].append(user)
+
+            ## do the actual saving of the file here
+
+            add_notice(req, _('The permissions have been updated.'))
             req.redirect(req.href.admin(category, page))
+
+        perms = self.read_config()
         
         flattened_perms = set()
         for p in perms.values():

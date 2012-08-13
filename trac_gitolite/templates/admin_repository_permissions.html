@@ -12,6 +12,7 @@
 
   <body>
     <h2>Manage Repository Permissions</h2>
+    <form method="post" action="">
 
     <table class="listing">
       <thead>
@@ -25,12 +26,16 @@
 	  <td>$repo</td>
 	  <td py:for="user in users">
 	    <label py:for="perm in sort_perms(repo_perms.keys())"
-		   for="$repo|$user|$perm"
+		   for='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
 		   style="border: 1px solid lightgray; border-radius: 5px; padding: 2px; margin-right: 2px">
 	      $perm
-	      <input type="checkbox" name="$repo|$user|$perm" id="$repo|$user|$perm" 
+	      <input type="checkbox" 
+		     name='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
+		     id='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
 		     checked="checked" py:if="user in repo_perms[perm]" />
-	      <input type="checkbox" name="$repo|$user|$perm" id="$repo|$user|$perm" 
+	      <input type="checkbox" 
+		     name='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
+		     id='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
 		     py:if="user not in repo_perms[perm]" />
 	    </label>
 	  </td>
@@ -41,6 +46,8 @@
     <div class="buttons">
       <input type="submit" value="${_('Update repository permissions')}" />
     </div>
+
+    </form>
   </body>
 
 </html>
