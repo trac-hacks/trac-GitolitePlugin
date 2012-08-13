@@ -28,8 +28,10 @@
 		   for="$repo|$user|$perm"
 		   style="border: 1px solid lightgray; border-radius: 5px; padding: 2px; margin-right: 2px">
 	      $perm
-	      <input type="checkbox" checked="checked" py:if="user in repo_perms[perm]" />
-	      <input type="checkbox" py:if="user not in repo_perms[perm]" />
+	      <input type="checkbox" name="$repo|$user|$perm" id="$repo|$user|$perm" 
+		     checked="checked" py:if="user in repo_perms[perm]" />
+	      <input type="checkbox" name="$repo|$user|$perm" id="$repo|$user|$perm" 
+		     py:if="user not in repo_perms[perm]" />
 	    </label>
 	  </td>
 	</tr>
