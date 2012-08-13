@@ -17,14 +17,20 @@
       <thead>
 	<tr>
 	  <th>Repository</th>
-	  <th py:for="perm in permissions">$perm</th>
+	  <th py:for="user in users">$user</th>
 	</tr>
       </thead>
       <tbody>
-	<tr py:for="repo, perms in repositories.items()">
+	<tr py:for="repo, repo_perms in repositories.items()">
 	  <td>$repo</td>
-	  <td py:for="perm, users in perms.items()">
-	    $users
+	  <td py:for="user in users">
+	    <label py:for="perm in sort_perms(repo_perms.keys())"
+		   for="$repo|$user|$perm"
+		   style="border: 1px solid lightgray; border-radius: 5px; padding: 2px; margin-right: 2px">
+	      $perm
+	      <input type="checkbox" checked="checked" py:if="user in repo_perms[perm]" />
+	      <input type="checkbox" py:if="user not in repo_perms[perm]" />
+	    </label>
 	  </td>
 	</tr>
       </tbody>

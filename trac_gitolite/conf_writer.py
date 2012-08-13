@@ -13,6 +13,15 @@ class GitoliteConfWriter(Component):
 
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
+    
+    def get_users(self):
+        repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
+        node = repo.get_node("keydir")
+        assert node.isdir, "Node %s at /keydir/ is not a directory" % node
+        for child in node.get_entries():
+            name = child.get_name()
+            assert name.endswith(".pub"), "Node %s" % name
+            yield name[:-4]
 
     def read_config(self):
         repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
@@ -40,15 +49,19 @@ class GitoliteConfWriter(Component):
             for perm in p:
                 flattened_perms.add(perm)
         flattened_perms = list(flattened_perms)
-        tail = []
-        ## Ensure the + goes last
-        if '+' in flattened_perms:
-            flattened_perms.remove("+")
-            tail.append("+")
-        flattened_perms = sorted(flattened_perms)
-        flattened_perms.extend(tail)
+        def sort_perms(perms):
+            tail = []
+            ## Ensure the + goes last
+            if '+' in perms:
+                perms.remove("+")
+                tail.append("+")
+            perms = sorted(perms)
+            perms.extend(tail)
+            return perms
+        flattened_perms = sort_perms(flattened_perms)
 
-        data = {'repositories': perms, 'permissions': flattened_perms}
+        data = {'repositories': perms, 'permissions': flattened_perms, 'users': list(self.get_users()),
+                'sort_perms': sort_perms}
         return 'admin_repository_permissions.html', data
 
     # ITemplateProvider methods
