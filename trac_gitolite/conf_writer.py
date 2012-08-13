@@ -5,6 +5,7 @@ from trac.admin import IAdminPanelProvider
 from trac.core import *
 from trac.config import Option, BoolOption
 from trac.util.translation import _
+from trac.versioncontrol import DbRepositoryProvider
 from trac.web.chrome import ITemplateProvider
 from trac.web.chrome import add_notice
 
@@ -58,7 +59,11 @@ class GitoliteConfWriter(Component):
                 if user not in perms[repo][perm]:
                     perms[repo][perm].append(user)
 
-            ## do the actual saving of the file here
+            db_provider = self.env[DbRepositoryProvider]
+            repo_dir = dict(db_provider.get_repositories())[self.gitolite_admin_reponame]['dir']
+            utils.save_file(repo_dir, 'conf/gitolite.conf', 
+                            utils.to_string(perms),
+                            _('Updating repository permissions'))
 
             add_notice(req, _('The permissions have been updated.'))
             req.redirect(req.href.admin(category, page))

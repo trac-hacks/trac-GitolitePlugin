@@ -1,4 +1,7 @@
+import os
+import subprocess
 from StringIO import StringIO
+from tempfile import mkdtemp
 
 def read_config(fp):
     repos = dict()
@@ -71,3 +74,12 @@ def to_string(config):
     fp.seek(0)
     return fp.read()
 
+def save_file(repo_path, file_path, contents, msg):
+    tempdir = mkdtemp()
+    subprocess.check_call(['git', 'clone', repo_path, tempdir])
+    fp = open(os.path.join(tempdir, file_path), 'w')
+    fp.write(contents)
+    fp.close()
+    subprocess.check_call(['git', 'add', file_path], cwd=tempdir)
+    subprocess.check_call(['git', 'commit', '-m', msg], cwd=tempdir)
+    subprocess.check_call(['git', 'push'], cwd=tempdir)
