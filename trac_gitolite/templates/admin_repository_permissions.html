@@ -1,0 +1,35 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
+  <xi:include href="admin.html"/>
+  <head>
+    <title>Repository Permissions</title>
+  </head>
+
+  <body>
+    <h2>Manage Repository Permissions</h2>
+
+    <table class="listing">
+      <thead>
+	<tr>
+	  <th>Repository</th>
+	  <th py:for="perm in permissions">$perm</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr py:for="repo, perms in repositories.items()">
+	  <td>$repo</td>
+	  <td py:for="perm, users in perms.items()">
+	    $users
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+
+  </body>
+
+</html>
