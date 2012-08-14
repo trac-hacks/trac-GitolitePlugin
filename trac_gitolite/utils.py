@@ -83,3 +83,12 @@ def save_file(repo_path, file_path, contents, msg):
     subprocess.check_call(['git', 'add', file_path], cwd=tempdir)
     subprocess.check_call(['git', 'commit', '-m', msg], cwd=tempdir)
     subprocess.check_call(['git', 'push'], cwd=tempdir)
+
+def remove_files(repo_path, file_paths, msg):
+    tempdir = mkdtemp()
+    subprocess.check_call(['git', 'clone', repo_path, tempdir])
+    for file_path in file_paths:
+        subprocess.check_call(['git', 'rm', file_path], cwd=tempdir)
+    subprocess.check_call(['git', 'commit', '-m', msg], cwd=tempdir)
+    subprocess.check_call(['git', 'push'], cwd=tempdir)
+    
