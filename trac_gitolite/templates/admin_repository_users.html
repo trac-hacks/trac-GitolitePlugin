@@ -1,0 +1,63 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
+  <xi:include href="admin.html"/>
+  <head>
+    <title>Repository Users</title>
+  </head>
+
+  <body>
+    <h2>Manage Repository Users</h2>
+
+    <form enctype="multipart/form-encoded" class="addnew" method="post" action="">
+      <fieldset>
+	<legend>Add User:</legend>
+	<div class="field">
+	  <label>Name:
+	    <input type="text" name="name" />
+	  </label>
+	</div>
+	<div class="field">
+	  <label>SSH Public Key:
+	    <input type="file" name="sshkey" />
+	  </label>
+	</div>
+	<div class="buttons">
+	  <input type="submit" name="add_user" value="Add" />
+	</div>
+      </fieldset>
+    </form>
+
+    <form method="post" action="">
+
+    <table class="listing">
+      <thead>
+	<tr>
+	  <th class="sel">&nbsp;</th>
+	  <th>Name</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr py:for="user in users">
+	  <td class="sel">
+	    <input type="checkbox" name="$user" />
+	  </td>
+	  <td>
+	    $user
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+
+    <div class="buttons">
+      <input type="submit" value="${_('Remove selected users')}" />
+    </div>
+
+    </form>
+  </body>
+
+</html>

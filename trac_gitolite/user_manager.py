@@ -5,6 +5,7 @@ from trac.core import *
 from trac.config import Option, BoolOption
 from trac.util.translation import _
 from trac.web.chrome import ITemplateProvider
+from trac.web.chrome import add_notice
 
 from trac_gitolite import utils
 
@@ -33,7 +34,12 @@ class GitoliteUserManager(Component):
     def render_admin_panel(self, req, category, page, path_info):
         req.perm.require('VERSIONCONTROL_ADMIN')
 
-        pass
+        if req.method == 'POST':
+            add_notice(req, _('The selected users have been removed and no longer have SSH access to your repositories.  Note that if they have Trac accounts, they may still be able to browse the source code through the web.'))
+            req.redirect(req.href.admin(category, page))
+
+        data = {'users': self.get_users()}
+        return 'admin_repository_users.html', data
 
     # ITemplateProvider methods
 
