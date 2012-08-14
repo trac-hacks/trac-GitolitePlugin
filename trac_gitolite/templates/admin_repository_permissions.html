@@ -25,18 +25,18 @@
 	<tr py:for="repo, repo_perms in repositories.items()">
 	  <td>$repo</td>
 	  <td py:for="user in users">
-	    <label py:for="perm in sort_perms(repo_perms.keys())"
+	    <label py:for="perm in permissions"
 		   for='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
 		   style="border: 1px solid lightgray; border-radius: 5px; padding: 2px; margin-right: 2px">
 	      $perm
 	      <input type="checkbox" 
 		     name='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
 		     id='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
-		     checked="checked" py:if="user in repo_perms[perm]" />
+		     checked="checked" py:if="user in repo_perms.get(perm, [])" />
 	      <input type="checkbox" 
 		     name='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
 		     id='{"repo": "$repo", "user": "$user", "perm": "$perm"}'
-		     py:if="user not in repo_perms[perm]" />
+		     py:if="user not in repo_perms.get(perm, [])" />
 	    </label>
 	  </td>
 	</tr>
