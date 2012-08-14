@@ -4,6 +4,7 @@ from trac.admin import IAdminPanelProvider
 from trac.core import *
 from trac.config import Option, BoolOption
 from trac.util.translation import _
+from trac.versioncontrol import DbRepositoryProvider
 from trac.web.chrome import ITemplateProvider
 from trac.web.chrome import add_notice
 
@@ -35,6 +36,19 @@ class GitoliteUserManager(Component):
         req.perm.require('VERSIONCONTROL_ADMIN')
 
         if req.method == 'POST':
+            if 'add_user' in req.args:
+                username = req.args['name']
+                pubkey = req.args['sshkey'].file
+                
+                db_provider = self.env[DbRepositoryProvider]
+                repo_dir = dict(db_provider.get_repositories())[self.gitolite_admin_reponame]['dir']
+                utils.save_file(repo_dir, 'keydir/%s.pub' % username,
+                                pubkey.read(), _('Adding new user %s' % username))
+
+                add_notice(req, _('User "%s" has been added.  Visit the repository permissions panel to set up the new user\'s read/write permissions.' % (
+                            username)))
+                req.redirect(req.href.admin(category, page))
+            
             add_notice(req, _('The selected users have been removed and no longer have SSH access to your repositories.  Note that if they have Trac accounts, they may still be able to browse the source code through the web.'))
             req.redirect(req.href.admin(category, page))
 
