@@ -1,3 +1,4 @@
+import getpass
 import pkg_resources
 
 from trac.admin import IAdminPanelProvider
@@ -5,7 +6,6 @@ from trac.core import *
 from trac.config import Option, BoolOption
 from trac.perm import IPermissionRequestor
 from trac.util.translation import _
-from trac.versioncontrol import DbRepositoryProvider
 from trac.web.chrome import ITemplateProvider
 from trac.web.chrome import add_notice, add_warning
 
@@ -16,6 +16,8 @@ class GitoliteRepositoryManager(Component):
 
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
+    gitolite_admin_ssh_path = Option('trac-gitolite', 'admin_ssh_path',
+                                     default="gitolite@localhost:gitolite-admin.git")
 
     def read_config(self):
         repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
@@ -40,7 +42,19 @@ class GitoliteRepositoryManager(Component):
         req.perm.require('REPOSITORY_CREATE')
 
         if req.method == 'POST':
-
+            repo_name = req.args['name']
+            perms = self.read_config()
+            if repo_name in perms:
+                add_warning(req, _('A repository named %s already exists; maybe you just need to tell Trac about it using the Repositories panel?'))
+                req.redirect(req.href.admin(category, page))
+            perms[repo_name] = repo_perms = {}
+            trac_user = getpass.getuser()
+            for perm in ['R', 'W', '+']:
+                repo_perms[perm] = [trac_user]
+            utils.save_file(self.gitolite_admin_ssh_path, 'conf/gitolite.conf',
+                            utils.to_string(perms),
+                            _('Adding new repository %s' % repo_name))
+            add_notice(req, _('Repository "%s" has been created.  Now you should give some users permissions on it using the Version Control Permissions panel.' % repo_name))
             req.redirect(req.href.admin(category, page))
 
         data = {'repos': sorted(self.read_config())}
