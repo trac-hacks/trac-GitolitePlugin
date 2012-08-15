@@ -10,7 +10,7 @@ from trac.web.chrome import add_notice
 
 from trac_gitolite import utils
 
-class GitoliteConfWriter(Component):
+class GitolitePermissionManager(Component):
     implements(IAdminPanelProvider, ITemplateProvider)
 
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
