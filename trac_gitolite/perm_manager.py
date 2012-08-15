@@ -1,3 +1,4 @@
+import getpass
 import json
 import pkg_resources
 
@@ -17,6 +18,10 @@ class GitolitePermissionManager(Component):
                                      default="gitolite-admin")
     gitolite_admin_ssh_path = Option('trac-gitolite', 'admin_ssh_path',
                                      default="gitolite@localhost:gitolite-admin.git")
+    gitolite_admin_real_reponame = Option('trac-gitolite', 'admin_real_reponame',
+                                          default="gitolite-admin")
+    gitolite_admin_system_user = Option('trac-gitolite', 'admin_system_user',
+                                        default="trac")
 
     def get_users(self):
         repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
@@ -25,7 +30,8 @@ class GitolitePermissionManager(Component):
         for child in node.get_entries():
             name = child.get_name()
             assert name.endswith(".pub"), "Node %s" % name
-            yield name[:-4]
+            name = name[:-4]
+            yield name
 
     def read_config(self):
         repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
@@ -59,6 +65,11 @@ class GitolitePermissionManager(Component):
                     perms[repo][perm] = []
                 if user not in perms[repo][perm]:
                     perms[repo][perm].append(user)
+
+            system_user_perms = perms.get(self.gitolite_admin_real_reponame, {}).get(self.gitolite_admin_system_user, [])
+            if 'R' not in system_user_perms or 'W' not in system_user_perms:
+                add_warning(req, _('Read and write permissions on the gitolite admin repo must not be revoked for user %s -- otherwise this plugin will no longer work!' % self.gitolite_admin_system_user))
+                req.redirect(req.href.admin(category, page))
 
             utils.save_file(self.gitolite_admin_ssh_path, 'conf/gitolite.conf', 
                             utils.to_string(perms),
