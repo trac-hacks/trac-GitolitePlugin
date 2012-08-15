@@ -18,7 +18,7 @@ class GitolitePermissionManager(Component):
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
     gitolite_admin_ssh_path = Option('trac-gitolite', 'admin_ssh_path',
-                                     default="gitolite@localhost:gitolite-admin.git")
+                                     default="git@localhost:gitolite-admin.git")
     gitolite_admin_real_reponame = Option('trac-gitolite', 'admin_real_reponame',
                                           default="gitolite-admin")
     gitolite_admin_system_user = Option('trac-gitolite', 'admin_system_user',
