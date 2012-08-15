@@ -10,7 +10,7 @@ class GitolitePermissionPolicy(Component):
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
     default_to_private = BoolOption('trac-gitolite', 'default_private',
-                                    default=False,
+                                    default=True,
         doc=("If this flag is set to True, then repositories will be private by default, "
              "causing all permissions to be denied to all users if the repository "
              "is not mentioned in the gitolite conf file."))
