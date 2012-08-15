@@ -67,8 +67,9 @@ class GitolitePermissionManager(Component):
                 if user not in perms[repo][perm]:
                     perms[repo][perm].append(user)
 
-            system_user_perms = perms.get(self.gitolite_admin_real_reponame, {}).get(self.gitolite_admin_system_user, [])
-            if 'R' not in system_user_perms or 'W' not in system_user_perms:
+            gitolite_admin_perms = perms.get(self.gitolite_admin_real_reponame, {})
+            if (self.gitolite_admin_system_user not in gitolite_admin_perms.get('R', []) or
+                self.gitolite_admin_system_user not in gitolite_admin_perms.get('W', [])):
                 add_warning(req, _('Read and write permissions on the gitolite admin repo must not be revoked for user %s -- otherwise this plugin will no longer work!' % self.gitolite_admin_system_user))
                 req.redirect(req.href.admin(category, page))
 
