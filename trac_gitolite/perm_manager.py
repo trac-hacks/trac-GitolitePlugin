@@ -8,6 +8,7 @@ from trac.config import Option, BoolOption
 from trac.util.translation import _
 from trac.web.chrome import ITemplateProvider
 from trac.web.chrome import add_notice
+from trac.web.chrome import add_warning
 
 from trac_gitolite import utils
 
