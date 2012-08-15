@@ -22,7 +22,7 @@
 	</tr>
       </thead>
       <tbody>
-	<tr py:for="repo, repo_perms in repositories.items()">
+	<tr py:for="repo, repo_perms in sorted(repositories.items())">
 	  <td>$repo</td>
 	  <td py:for="user in users">
 	    <label py:for="perm in permissions"
