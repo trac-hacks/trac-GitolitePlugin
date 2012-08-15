@@ -15,7 +15,7 @@ class GitoliteUserManager(Component):
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
     gitolite_admin_ssh_path = Option('trac-gitolite', 'admin_ssh_path',
-                                     default="gitolite@localhost:gitolite-admin.git")
+                                     default="git@localhost:gitolite-admin.git")
 
     def get_users(self):
         repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
