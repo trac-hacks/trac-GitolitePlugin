@@ -4,7 +4,6 @@ from trac.admin import IAdminPanelProvider
 from trac.core import *
 from trac.config import Option, BoolOption
 from trac.util.translation import _
-from trac.versioncontrol import DbRepositoryProvider
 from trac.web.chrome import ITemplateProvider
 from trac.web.chrome import add_notice, add_warning
 
@@ -15,6 +14,8 @@ class GitoliteUserManager(Component):
 
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
+    gitolite_admin_ssh_path = Option('trac-gitolite', 'admin_ssh_path',
+                                     default="gitolite@localhost:gitolite-admin.git")
 
     def get_users(self):
         repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
@@ -37,14 +38,11 @@ class GitoliteUserManager(Component):
 
         if req.method == 'POST':
 
-            db_provider = self.env[DbRepositoryProvider]
-            repo_dir = dict(db_provider.get_repositories())[self.gitolite_admin_reponame]['dir']
-
             if 'add_user' in req.args:
                 username = req.args['name']
                 pubkey = req.args['sshkey'].file
                 
-                utils.save_file(repo_dir, 'keydir/%s.pub' % username,
+                utils.save_file(self.gitolite_admin_ssh_path, 'keydir/%s.pub' % username,
                                 pubkey.read(), _('Adding new user %s' % username))
 
                 add_notice(req, _('User "%s" has been added.  Visit the repository permissions panel to set up the new user\'s read/write permissions.' % (
@@ -53,7 +51,7 @@ class GitoliteUserManager(Component):
 
             users = ['keydir/%s.pub' % username for username in req.args.get('remove_user', [])]
             if users:
-                utils.remove_files(repo_dir, users, _('Removing users'))
+                utils.remove_files(self.gitolite_admin_ssh_path, users, _('Removing users'))
                 add_notice(req, _('The selected users have been removed and no longer have SSH access to your repositories.  Note that if they have Trac accounts, they may still be able to browse the source code through the web.'))
             else:
                 add_warning(req, _('No users were selected.'))

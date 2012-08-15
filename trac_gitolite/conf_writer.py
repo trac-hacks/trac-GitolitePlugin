@@ -5,7 +5,6 @@ from trac.admin import IAdminPanelProvider
 from trac.core import *
 from trac.config import Option, BoolOption
 from trac.util.translation import _
-from trac.versioncontrol import DbRepositoryProvider
 from trac.web.chrome import ITemplateProvider
 from trac.web.chrome import add_notice
 
@@ -16,7 +15,9 @@ class GitoliteConfWriter(Component):
 
     gitolite_admin_reponame = Option('trac-gitolite', 'admin_reponame',
                                      default="gitolite-admin")
-    
+    gitolite_admin_ssh_path = Option('trac-gitolite', 'admin_ssh_path',
+                                     default="gitolite@localhost:gitolite-admin.git")
+
     def get_users(self):
         repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
         node = repo.get_node("keydir")
@@ -59,9 +60,7 @@ class GitoliteConfWriter(Component):
                 if user not in perms[repo][perm]:
                     perms[repo][perm].append(user)
 
-            db_provider = self.env[DbRepositoryProvider]
-            repo_dir = dict(db_provider.get_repositories())[self.gitolite_admin_reponame]['dir']
-            utils.save_file(repo_dir, 'conf/gitolite.conf', 
+            utils.save_file(self.gitolite_admin_ssh_path, 'conf/gitolite.conf', 
                             utils.to_string(perms),
                             _('Updating repository permissions'))
 
