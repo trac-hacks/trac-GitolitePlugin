@@ -10,7 +10,7 @@ except:
     pass
 
 setup(name='trac_gitolite',
-      version='0.1dev',
+      version='0.1',
       description="",
       long_description=long_description,
       packages=['trac_gitolite'],
