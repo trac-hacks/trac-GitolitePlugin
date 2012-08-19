@@ -5,7 +5,8 @@ This plugin provides two-way integration with gitolite: https://github.com/sitar
  3. Trac admins may add and remove users' SSH public keys through the Trac web interface to control access to the gitolite system
  4. Trac admins may use a "Create New Repository" feature to initialize an empty gitolite repository through the Trac web interface
 
-## Installation 
+Installation 
+============
 
 First, install both Trac and Gitolite in the standard ways.  They must
 be installed on the same server.
