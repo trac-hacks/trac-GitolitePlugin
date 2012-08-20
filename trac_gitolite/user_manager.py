@@ -18,8 +18,8 @@ class GitoliteUserManager(Component):
                                      default="git@localhost:gitolite-admin.git")
 
     def get_users(self):
-        repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
-        node = repo.get_node("keydir")
+        node = utils.get_repo_node(self.env, self.gitolite_admin_reponame, 
+                                   "keydir")
         assert node.isdir, "Node %s at /keydir/ is not a directory" % node
         for child in node.get_entries():
             name = child.get_name()

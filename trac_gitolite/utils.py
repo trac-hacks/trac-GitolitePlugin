@@ -3,6 +3,19 @@ import subprocess
 from StringIO import StringIO
 from tempfile import mkdtemp
 
+def get_repo_node(env, repo_name, node):
+    try:
+        from tracopt.versioncontrol.git.PyGIT import GitError
+    except ImportError: ## Pre-1.0 Trac
+        from tracext.git.PyGIT import GitError
+    from trac.core import TracError
+    try:
+        repo = env.get_repository(reponame=repo_name)
+        return repo.get_node(node)
+    except GitError:
+        raise TracError("Error reading Git files at %s; check your repository path (for repo %s) and file permissions" % (node, repo_name))
+
+
 def read_config(fp):
     repos = dict()
     this_repo = None

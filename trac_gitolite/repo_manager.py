@@ -20,8 +20,8 @@ class GitoliteRepositoryManager(Component):
                                      default="git@localhost:gitolite-admin.git")
 
     def read_config(self):
-        repo = self.env.get_repository(reponame=self.gitolite_admin_reponame)
-        node = repo.get_node("conf/gitolite.conf")
+        node = utils.get_repo_node(self.env, self.gitolite_admin_reponame,
+                                   "conf/gitolite.conf")
         fp = node.get_content()
         return utils.read_config(fp)
     
