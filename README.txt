@@ -16,16 +16,16 @@ Overview
    read access to all gitolite repositories in the present and
    future.  The simplest way to do this is to run Trac as the gitolite
    user; the more correct way is to add Trac to the gitolite user's
-   primary group and set `UMASK=>0027` in `.gitolite.rc` as well as
+   primary group and set ``UMASK=>0027`` in ``.gitolite.rc`` as well as
    running chmod to fix up permissions on the already-created files.
 3. Ensure that the system user running the Trac process can clone and
    push the gitolite-admin repository, by setting up an SSH keypair
-   for the Trac user, adding that public key to gitolite-admin/keydir
+   for the Trac user, adding that public key to ``gitolite-admin/keydir``
    and adding RW+ (or just RW) permissions to the corresponding user
-   in gitolite-admin/conf/gitolite.conf for "repo gitolite-admin".
+   in ``gitolite-admin/conf/gitolite.conf`` for "repo gitolite-admin".
 4. Tell Trac about the existence of the gitolite-admin repository by
-   running a command like `trac-admin <env> repository add
-   gitolite-admin $GITOLITE_HOME/repositories/gitolite-admin.git git`
+   running a command like ``trac-admin <env> repository add
+   gitolite-admin $GITOLITE_HOME/repositories/gitolite-admin.git git``
 5. Install the trac_gitolite plugin, enable its components in trac.ini
    and prepend "GitolitePermissionPolicy" to your site's trac.ini
    permission_policies settings.
@@ -48,8 +48,8 @@ on your server like this::
 
 You will also need to ensure that Trac can continue to read all needed
 files over time.  One way to do this is to set the UMASK setting in
-`.gitolite.rc` to 0027.  Another way would be to set the repository
-configuration `core.sharedRepository = group` in all existing and new
+``.gitolite.rc`` to 0027.  Another way would be to set the repository
+configuration ``core.sharedRepository = group`` in all existing and new
 repositories (including gitolite-admin) using a repository template.
 
 Now Trac will be able to read from your gitolite repositories using its
@@ -65,7 +65,7 @@ with a command line::
 From now on, to add an existing gitolite repository named
 "my-first-repo" to your
 Trac system, you would add a Trac git repository named "my-first-repo"
-with directory `/home/git/repositories/my-first-repo.git`
+with directory ``/home/git/repositories/my-first-repo.git``
 through Trac's standard administrative web interface, shell scripts,
 or configuration files.
 
