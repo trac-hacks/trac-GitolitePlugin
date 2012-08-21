@@ -103,3 +103,12 @@ This will add three new panels to the "Version Control" section in the Trac Admi
   permission_policies = GitolitePermissionPolicy, AuthzPolicy, 
                         DefaultPermissionPolicy, LegacyAttachmentPolicy
 
+Known Deficiencies
+==================
+
+Patches are welcome for any of these known deficiencies:
+
+ * Gitolite groups (aside from `@all`) are unsupported
+ * Gitolite includes are unsupported
+ * The process of creating a new repo is a bit confusing (first create it in Gitolite Repositories, then add it in Repositories)
+ * The permission-management UI is overwhelming
