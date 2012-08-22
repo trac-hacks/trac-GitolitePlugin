@@ -135,6 +135,7 @@ Patches are welcome for any of these known deficiencies:
 
 * Only the most basic Gitolite configuration is supported; any of the
   following advanced gitolite features will cause the plugin to fail:
+
   * refexes are unsupported: they cannot be configured through
     the Trac admin UI, and they are not respected by the Trac
     Browser permission policy.
