@@ -103,12 +103,66 @@ This will add three new panels to the "Version Control" section in the Trac Admi
   permission_policies = GitolitePermissionPolicy, AuthzPolicy, 
                         DefaultPermissionPolicy, LegacyAttachmentPolicy
 
+Configuration
+=============
+
+Sensible defaults are provided that should work for most typical
+installations of Trac and Gitolite. The following trac.ini options
+(all in a `[trac-gitolite]` section) can be modified if necessary:
+
+* admin_reponame: defaults to gitolite-admin; this is the name *in
+   trac* of the gitolite-admin repository
+* admin_real_reponame: defaults to gitolite-admin; this is the name
+   *in gitolite* of the gitolite-admin repository
+* admin_ssh_path: defaults to git@localhost:gitolite-admin.git
+* admin_system_user: defaults to "trac"; this is the name *in
+   gitolite* of the system user running the trac web process
+
+* default_private: defaults to True; when set to True (the default)
+  repositories known to Trac which are missing from gitolite.conf 
+  will not be visible through the Trac source browser to any users.
+  Set this to False to defer those repositories' permissions to the
+  rest of the Trac permission system.
+* all_includes_anonymous: defaults to False; when set to True,
+  repositories with `@all = R` in `gitolite.conf` will be viewable
+  through the web by anonymous users. The default is to make these
+  repositories viewable by all logged-in users only.
+
 Known Deficiencies
 ==================
 
 Patches are welcome for any of these known deficiencies:
 
- * Gitolite groups (aside from `@all`) are unsupported
- * Gitolite includes are unsupported
- * The process of creating a new repo is a bit confusing (first create it in Gitolite Repositories, then add it in Repositories)
- * The permission-management UI is overwhelming
+* Only the most basic Gitolite configuration is supported; any of the
+   following advanced gitolite features will cause the plugin to fail:
+ * refexes are unsupported: they cannot be configured through
+    the Trac admin UI, and they are not respected by the Trac
+    Browser permission policy.
+ * deny rules are unsupported
+ * user groups (aside from `@all`) are unsupported
+ * project groups are unsupported
+ * conf includes are unsupported
+ * permissions other than R, W, + are unsupported: C, D, M
+* Probably there are other unsupported advanced Gitolite features that
+   I don't even know about -- feel free to tell me about them
+* The process of creating a new repo is a bit confusing (first create
+   it in Gitolite Repositories, then add it in Repositories)
+* The permission-management UI is overwhelming
+* All users are assumed to have the same usernames in Trac as their
+   gitolite names.
+* All repositories are assumed to have the same names in Trac as they
+   do in gitolite.
+* The behavior of Trac repository aliases have not been tested at all
+* I think TRAC_ADMIN is not respected (TRAC_ADMIN users should have
+   access to all repositories regardless of the gitolite.conf
+   permissions, unless a configuration option says otherwise)
+* Comments in the gitolite conf file will be overwritten when saving
+   changes through Trac; in general, the gitolite conf file's
+   particular contents, ordering and formatting will not be preserved
+   reliably through Trac writes.
+* The whole approach -- of having Trac clone, edit, commit and push
+   the gitolite-admin repository during the user's web request with
+   subprocesses -- is a pretty terrible hack, but I don't know if
+   there's any possible alternative.  (I don't think Gitolite has an
+   API.)  Using dulwich instead of `subprocess.call(['git', 'clone'])`
+   etc would reduce the hackishness I guess.
