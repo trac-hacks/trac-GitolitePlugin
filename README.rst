@@ -15,8 +15,8 @@ Overview
 2. Ensure that the system user running the Trac process has filesystem
    read access to all gitolite repositories in the present and
    future.  The simplest way to do this is to run Trac as the gitolite
-   user; the more correct way is to add Trac to the gitolite user's
-   primary group and set ``UMASK=>0027`` in ``.gitolite.rc`` as well as
+   user; the more correct way is to add the Trac and Gitolite users to
+   a shared group, set ``UMASK=>0027`` in ``.gitolite.rc`` as well as
    running chmod to fix up permissions on the already-created files.
 3. Ensure that the system user running the Trac process can clone and
    push the gitolite-admin repository, by setting up an SSH keypair
@@ -43,8 +43,15 @@ is running as user "wsgi" and gitolite has been installed to run as user
 "git" with a homedir /home/git/ you will probably want to run a command 
 on your server like this::
 
-  sudo usermod -a -G git wsgi
-  sudo chmod -R g+rX /home/git/repositories/
+  sudo groupadd infra
+  sudo usermod -a -G infra wsgi
+  sudo usermod -a -G infra git
+  sudo chown -R git:infra /home/git/repositories/
+  sudo chmod -R g+rXs /home/git/repositories/
+
+(The +s ensures that new files created in the git repositories, like
+new commit objects in the repos, will retain the "infra" group-ownership
+rather than reverting to the git user's primary group.)
 
 You will also need to ensure that Trac can continue to read all needed
 files over time.  One way to do this is to set the UMASK setting in
