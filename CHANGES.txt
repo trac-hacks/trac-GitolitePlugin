@@ -1,5 +1,10 @@
-0.2 (Nov 10 2012)
------------------
+0.2.1 (Nov 10 2012)
+-------------------
+
+Fixing formatting issues (in docs and in MANIFEST.in) in previous release.
+ 
+0.2.0 (Nov 10 2012)
+-------------------
 
 Added MANIFEST.in to ensure that template files are included in installed package.
 
