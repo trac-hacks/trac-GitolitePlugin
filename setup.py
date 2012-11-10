@@ -10,11 +10,11 @@ except:
     pass
 
 setup(name='trac-GitolitePlugin',
-      version='0.2.3',
+      version='0.2.4',
       description="",
       long_description=long_description,
       packages=['trac_gitolite'],
-      package_dara={'trac_gitolite': ['templates/*.html']},
+      package_data={'trac_gitolite': ['templates/*.html']},
       author='Ethan Jucovy',
       author_email='ejucovy@gmail.com',
       url="http://trac-hacks.org/wiki/GitolitePlugin",
