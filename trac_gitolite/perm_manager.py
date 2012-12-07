@@ -81,11 +81,14 @@ class GitolitePermissionManager(Component):
             req.redirect(req.href.admin(category, page))
 
         perms = self.read_config()
-        
+
+        users_listed_in_perms = set()
         flattened_perms = set()
+
         for p in perms.values():
             for perm in p:
                 flattened_perms.add(perm)
+                users_listed_in_perms.update(p[perm])
         flattened_perms = list(flattened_perms)
         def sort_perms(perms):
             tail = []
@@ -98,7 +101,8 @@ class GitolitePermissionManager(Component):
             return perms
         flattened_perms = sort_perms(flattened_perms)
 
-        data = {'repositories': perms, 'permissions': flattened_perms, 'users': list(self.get_users()),
+        data = {'repositories': perms, 'permissions': flattened_perms, 
+                'users': sorted(list(set(self.get_users() + users_listed_in_perms))),
                 'sort_perms': sort_perms}
         return 'admin_repository_permissions.html', data
 
