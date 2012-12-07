@@ -1,3 +1,9 @@
+0.3.0 (Dec 06 2012)
+-------------------
+
+Permission manager no longer deletes configuration for users who are mentioned in
+gitolite.conf but absent from the keydir, and no longer deletes configuration for
+groups.
 
 0.2.4 (Nov 10 2012)
 -------------------
