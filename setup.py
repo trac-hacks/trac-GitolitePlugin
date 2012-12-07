@@ -10,8 +10,8 @@ except:
     pass
 
 setup(name='trac-GitolitePlugin',
-      version='0.3',
-      description="",
+      version='0.4dev',
+      description="two-way integration between trac and gitolite",
       long_description=long_description,
       packages=['trac_gitolite'],
       package_data={'trac_gitolite': ['templates/*.html']},
