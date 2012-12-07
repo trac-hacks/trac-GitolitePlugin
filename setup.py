@@ -10,7 +10,7 @@ except:
     pass
 
 setup(name='trac-GitolitePlugin',
-      version='0.4dev',
+      version='0.3.1',
       description="two-way integration between trac and gitolite",
       long_description=long_description,
       packages=['trac_gitolite'],
