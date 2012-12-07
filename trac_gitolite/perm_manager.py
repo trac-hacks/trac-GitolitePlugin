@@ -101,7 +101,7 @@ class GitolitePermissionManager(Component):
             return perms
         flattened_perms = sort_perms(flattened_perms)
 
-        users = sorted(list(set(list(self.get_users() + list(users_listed_in_perms)))))
+        users = sorted(list(set(list(self.get_users()) + list(users_listed_in_perms))))
         data = {'repositories': perms, 'permissions': flattened_perms, 
                 'users': users,
                 'sort_perms': sort_perms}
